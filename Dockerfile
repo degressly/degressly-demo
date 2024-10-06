@@ -8,5 +8,7 @@ RUN pip install -r requirements.txt
 COPY src/ .
 
 ENV PORT=8080
+ENV PYTHONUNBUFFERED=1
 
-ENTRYPOINT [ "python", "main.py", "$PORT" ]
+SHELL ["/bin/sh", "-c"]
+ENTRYPOINT python main.py $PORT 
