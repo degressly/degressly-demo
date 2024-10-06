@@ -6,7 +6,7 @@
 
 ## What is this?
 
-A one-click docker compose deployment for the entire degressly stack, along with a sample application for illustration.
+A one-click docker compose deployment for the entire degressly stack, along with a sample application for illustration. To learn more about the degressly stack, visit [degressly/degressly-core](https://github.com/degressly/degressly-core).
 
 ## What do I need to run this?
 
