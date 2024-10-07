@@ -99,14 +99,15 @@ services:
     depends_on:
       - kafka
   
-  degressly-nginx:
-    image: nginx
-    container_name: "degressly-nginx"
+  degressly-mitm:
+    image: mitmproxy/mitmproxy
+    container_name: "degressly-mitm"
     ports:
-      - "9000:9000"
+      - "9000:8080"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certs:/certs:ro
+      - ./certs:/home/mitmproxy/.mitmproxy
+      - ./mitm.py:/mitm.py:ro
+    command: ["mitmdump", "-s", "mitm.py", "--no-http2"]
     networks:
       - degressly_demo_network
     depends_on:
@@ -120,7 +121,7 @@ services:
       dockerfile: Dockerfile
     environment:
       HTTP_PROXY: http://degressly-downstream:8080
-      HTTPS_PROXY: https://degressly-nginx:9000
+      HTTPS_PROXY: https://degressly-mitm:8080
       PORT: 8080
     networks:
       - degressly_demo_network
@@ -135,7 +136,7 @@ services:
       dockerfile: Dockerfile
     environment:
       HTTP_PROXY: http://degressly-downstream:8080
-      HTTPS_PROXY: https://degressly-nginx:9000
+      HTTPS_PROXY: https://degressly-mitm:8080
       PORT: 8081
     networks:
       - degressly_demo_network
@@ -150,7 +151,7 @@ services:
       dockerfile: Dockerfile
     environment:
       HTTP_PROXY: http://degressly-downstream:8080
-      HTTPS_PROXY: https://degressly-nginx:9000
+      HTTPS_PROXY: https://degressly-mitm:8080
       PORT: 8082
     networks:
       - degressly_demo_network
