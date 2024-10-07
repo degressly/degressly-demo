@@ -13,7 +13,7 @@ caller_map = {
 
 @app.route("/")
 def hello_world():
-    url = "http://postman-echo.com"
+    url = "https://postman-echo.com"
 
     payload = {"test": port, "constant": "constant", "will_regress": "no_regress", "time": time.time(), "price": 99.95}
 
