@@ -30,7 +30,7 @@ def hello_world():
     }
 
     print(payload)
-    requests.request("POST", url, headers=headers, data=json.dumps(payload), verify=False)
+    requests.request("POST", url, headers=headers, data=json.dumps(payload))
 
     return Response(getXml(payload["price"]), content_type="application/xml")
 
