@@ -99,11 +99,39 @@ services:
     depends_on:
       - kafka
   
-  degressly-mitm:
+  degressly-mitm-primary:
     image: mitmproxy/mitmproxy
-    container_name: "degressly-mitm"
-    ports:
-      - "9000:8080"
+    container_name: "degressly-mitm-primary"
+    environment:
+     PROXY_HEADER: PRIMARY
+    volumes:
+      - ./certs:/home/mitmproxy/.mitmproxy
+      - ./mitm.py:/mitm.py:ro
+    command: ["mitmdump", "-s", "mitm.py", "--no-http2"]
+    networks:
+      - degressly_demo_network
+    depends_on:
+      - degressly-downstream
+
+  degressly-mitm-secondary:
+    image: mitmproxy/mitmproxy
+    container_name: "degressly-mitm-secondary"
+    environment:
+     PROXY_HEADER: SECONDARY
+    volumes:
+      - ./certs:/home/mitmproxy/.mitmproxy
+      - ./mitm.py:/mitm.py:ro
+    command: ["mitmdump", "-s", "mitm.py", "--no-http2"]
+    networks:
+      - degressly_demo_network
+    depends_on:
+      - degressly-downstream
+  
+  degressly-mitm-candidate:
+    image: mitmproxy/mitmproxy
+    container_name: "degressly-mitm-candidate"
+    environment:
+     PROXY_HEADER: CANDIDATE
     volumes:
       - ./certs:/home/mitmproxy/.mitmproxy
       - ./mitm.py:/mitm.py:ro
@@ -120,8 +148,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      HTTP_PROXY: http://degressly-downstream:8080
-      HTTPS_PROXY: https://degressly-mitm:8080
+      HTTP_PROXY: https://degressly-mitm-primary:8080
+      HTTPS_PROXY: https://degressly-mitm-primary:8080
       PORT: 8080
     networks:
       - degressly_demo_network
@@ -135,8 +163,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      HTTP_PROXY: http://degressly-downstream:8080
-      HTTPS_PROXY: https://degressly-mitm:8080
+      HTTP_PROXY: https://degressly-mitm-secondary:8080
+      HTTPS_PROXY: https://degressly-mitm-secondary:8080
       PORT: 8081
     networks:
       - degressly_demo_network
@@ -150,8 +178,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      HTTP_PROXY: http://degressly-downstream:8080
-      HTTPS_PROXY: https://degressly-mitm:8080
+      HTTP_PROXY: https://degressly-mitm-candidate:8080
+      HTTPS_PROXY: https://degressly-mitm-candidate:8080
       PORT: 8082
     networks:
       - degressly_demo_network

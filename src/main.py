@@ -5,12 +5,6 @@ port = sys.argv[1]
 
 app = Flask(__name__)
 
-caller_map = {
-    "8080": "PRIMARY",
-    "8081": "SECONDARY",
-    "8082": "CANDIDATE"
-}
-
 @app.route("/")
 def hello_world():
     url = "https://postman-echo.com"
@@ -25,7 +19,6 @@ def hello_world():
 
     headers = {
         "content-type": "application/json",
-        "x-degressly-caller": caller_map[port], 
         "x-degressly-trace-id": request.headers.get("x-degressly-trace-id")
     }
 
