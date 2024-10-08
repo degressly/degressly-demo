@@ -1,7 +1,7 @@
 from mitmproxy import http
 import os
 
-def request(flow):
+def request(flow: http.HTTPFlow):
     original_host = flow.request.host_header
     original_scheme = flow.request.scheme
 
