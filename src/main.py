@@ -24,8 +24,8 @@ def hello_world(route):
     }
 
     print(url, headers, payload)
-    resp = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-    print(resp)
+    # resp = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+    # print(resp)
     
     return Response(getXml(payload["price"]), content_type="application/xml")
 
